@@ -1,0 +1,91 @@
+name: Publish Release from manifest.json
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Extract version from manifest.json
+        id: get_version
+        run: |
+          import json, os
+          with open("custom_components/tc66c_ble/manifest.json") as f:
+              manifest = json.load(f)
+          version = manifest["version"]
+          print(f"Extracted version: {version}")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"version={version}\n")
+        shell: python
+
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          latest=$(git describe --tags --abbrev=0 || echo "")
+          echo "tag=$latest" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        env:
+          FROM_TAG: ${{ steps.get_latest_tag.outputs.tag }}
+        run: |
+          to="HEAD"
+          if [ -z "$FROM_TAG" ]; then
+            git log --pretty=format:"- %s" $to > changelog.txt
+          else
+            git log --pretty=format:"- %s" $FROM_TAG..$to > changelog.txt
+          fi
+
+      - name: Check if tag already exists
+        id: check_tag
+        run: |
+          TAG="${{ steps.get_version.outputs.version }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/$TAG"; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Git tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag -a "${{ steps.get_version.outputs.version }}" -m "Release ${{ steps.get_version.outputs.version }}"
+          git push origin "${{ steps.get_version.outputs.version }}"
+
+      - name: Create release zip for HACS
+        run: |
+          mkdir -p release/custom_components
+          cp -r custom_components/tc66c_ble release/custom_components/
+          cd release
+          zip -r tc66c_ble.zip custom_components
+
+      - name: Create GitHub Release
+        if: steps.check_tag.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          name: Release ${{ steps.get_version.outputs.version }}
+          body_path: changelog.txt
+          files: release/tc66c_ble.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}

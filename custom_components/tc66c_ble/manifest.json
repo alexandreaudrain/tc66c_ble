@@ -1,0 +1,11 @@
+{
+  "domain": "tc66c_ble",
+  "name": "TC66C BLE Adapter",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/alexandreaudrain/tc66c_ble/README.md",
+  "issue_tracker": "https://github.com/alexandreaudrain/tc66c_ble/issues",
+  "dependencies": ["bluetooth_adapters"],
+  "iot_class": "local_push",
+  "integration_type": "hub"
+}
