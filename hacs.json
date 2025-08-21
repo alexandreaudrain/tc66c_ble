@@ -1,8 +1,7 @@
 {
   "name": "TC66C BLE Integration",
-  "content_in_root": true,
+  "content_in_root": false,
   "domain": "tc66c_ble",
-  "country": "FR",
   "codeowners": ["@alexandreaudrain"],
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
