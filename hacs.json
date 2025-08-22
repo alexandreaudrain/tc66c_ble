@@ -3,5 +3,5 @@
   "content_in_root": false,
   "domain": "tc66c_ble",
   "codeowners": ["@alexandreaudrain"],
-  "version": "1.0.1"
+  "version": "1.0.2"
 }

@@ -12,7 +12,8 @@ from homeassistant.config_entries import ConfigFlow
 from homeassistant.const import CONF_ADDRESS
 from homeassistant.data_entry_flow import FlowResult
 
-from .const import DOMAIN, DEVICE_NAMES, CONF_NAME
+from .const import DOMAIN, TC66C_DEVICE_NAMES, CONF_NAME
+
 
 class ConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for TC66 BLE dongles."""
@@ -70,7 +71,7 @@ class ConfigFlow(ConfigFlow, domain=DOMAIN):
         current_ids = self._async_current_ids()
 
         for info in async_discovered_service_info(self.hass, connectable=True):
-            if not info.name or not any(name in info.name for name in DEVICE_NAMES):
+            if not info.name or not any(name in info.name for name in TC66C_DEVICE_NAMES):
                 continue
             if info.address in current_ids or info.address in self._discovered_devices:
                 continue

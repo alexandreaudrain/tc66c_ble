@@ -17,26 +17,6 @@ This custom integration allows Home Assistant to discover and connect to **TC66C
 
 Each sensor updates in real time and can be used in dashboards, automations, or energy monitoring setups.
 
-## 📦 Installation
-
-This integration is compatible with [HACS](https://hacs.xyz), the Home Assistant Community Store.
-
-### Option 1: Add via HACS
-
-Click the button below to add this repository to HACS:
-
-[![Add to Home Assistant](https://img.shields.io/badge/Add%20to%20Home%20Assistant-Install%20with%20HACS-blue?logo=home-assistant&style=for-the-badge)](https://my.home-assistant.io/redirect/hacs_repository/?owner=alexandreaudrain&repository=tc66c_ble&category=integration)
-
-> Replace `<your-github-username>` and `<your-repo-name>` with your actual GitHub info.
-
-### Option 2: Manual Installation
-
-1. Copy this repository into your Home Assistant `custom_components` folder.
-
-2. Restart Home Assistant
-3. Go to **Settings > Devices & Services > Add Integration**
-4. Search for **TC66 BLE** and follow the setup instructions
-
 ## 🧪 Requirements
 
 - A TC66C USB multimeter with BLE enabled

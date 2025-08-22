@@ -7,7 +7,7 @@ from homeassistant.components.bluetooth import (
     BluetoothChange,
 )
 from homeassistant.core import callback
-from .const import DEVICE_NAME
+from .const import TC66C_DEVICE_NAMES
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ def setup_passive_listener(hass, on_data_callback):
         if not service_info.name or not service_info.address:
             return
 
-        if DEVICE_NAME not in service_info.name:
+        if not any(name in service_info.name for name in TC66C_DEVICE_NAMES):
             return
 
         safe_manufacturer_data = {
